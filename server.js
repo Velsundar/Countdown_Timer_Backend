@@ -16,6 +16,7 @@ import { errorHandler } from "./src/middleware/errorHandler.js";
 dotenv.config();
 
 const app = express();
+app.use(helmet());
 app.use(cors());
 app.use(compression());
 app.use(express.json());
@@ -29,7 +30,6 @@ app.use("/api/streaks", streakRoutes);
 app.use("/api/countdown", countdownRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(errorHandler);
-app.use(helmet());
 connectDB();
 app.get("/", (req, res) => {
   res.send("Wedding Countdown API is running 🎉");
