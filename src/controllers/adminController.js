@@ -36,6 +36,8 @@ export const getAllUsers = async (req, res) => {
 
 export const updateEvent = async (req, res) => {
   try {
+        console.log("Request body for admin update user",req?.body)
+
     const { name, date, description } = req.body;
     if (!["engagement", "marriage"].includes(name)) {
       return res.status(400).json({ success: false, error: "Invalid event name." });
@@ -43,8 +45,13 @@ export const updateEvent = async (req, res) => {
 
     const updated = await Event.findOneAndUpdate(
       { name },
-      { date, description },
-      { new: true, upsert: true }
+      { 
+        $set: {
+          date, 
+          description 
+        }
+      },
+      { new: true, upsert: true, runValidators: true }
     );
 
     res.status(200).json({ success: true, message: "Event updated.", data: updated });
