@@ -16,8 +16,6 @@ import { errorHandler } from "./src/middleware/errorHandler.js";
 dotenv.config();
 
 const app = express();
-
-// Middleware
 app.use(cors());
 app.use(compression());
 app.use(express.json());
@@ -31,11 +29,7 @@ app.use("/api/countdowns", countdownRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(errorHandler);
 app.use(helmet());
-
-// Connect to Database
 connectDB();
-
-// Sample route
 app.get("/", (req, res) => {
   res.send("Wedding Countdown API is running 🎉");
 });

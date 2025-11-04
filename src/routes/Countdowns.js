@@ -4,6 +4,6 @@ import { getCountdown, setEventDate } from "../controllers/countdownController.j
 const router = express.Router();
 
 router.get("/:event", getCountdown);
-router.post("/", setEventDate); // optional admin endpoint
+router.post("/", setEventDate);
 
 export default router;

@@ -1,8 +1,8 @@
 import Streak from "../models/Streak.js";
 import User from "../models/User.js";
-import { sendEmail } from "../utils/emailServices.js"; // Add at top
+import { sendEmail } from "../utils/emailServices.js";
 
-const FILL_INCREMENT = 3.33; // each tap adds ~3.33% (30 taps = full heart)
+const FILL_INCREMENT = 3.33;
 
 export const recordDailyTap = async (req, res) => {
   try {
@@ -11,19 +11,17 @@ export const recordDailyTap = async (req, res) => {
       return res.status(400).json({ success: false, error: "Email required." });
     }
 
-    // Find user
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ success: false, error: "User not found." });
     }
 
-    // Find or create streak entry
     let streak = await Streak.findOne({ userId: user._id });
     const now = new Date();
     const todayIST = new Date(
       now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
-    const todayDateOnly = todayIST.toISOString().split("T")[0]; // YYYY-MM-DD
+    const todayDateOnly = todayIST.toISOString().split("T")[0];
 
     if (!streak) {
       streak = await Streak.create({
@@ -43,7 +41,6 @@ export const recordDailyTap = async (req, res) => {
       });
     }
 
-    // Check if already tapped today (IST)
     const lastTapIST = new Date(
       streak.lastTapDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
@@ -56,7 +53,6 @@ export const recordDailyTap = async (req, res) => {
       });
     }
 
-    // Check if yesterday’s tap exists (to continue streak)
     const yesterday = new Date(todayIST);
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayDateOnly = yesterday.toISOString().split("T")[0];
@@ -64,7 +60,7 @@ export const recordDailyTap = async (req, res) => {
     if (lastTapDateOnly === yesterdayDateOnly) {
       streak.currentStreak += 1;
     } else {
-      streak.currentStreak = 1; // reset streak
+      streak.currentStreak = 1;
     }
 
     streak.longestStreak = Math.max(streak.longestStreak, streak.currentStreak);
@@ -75,7 +71,6 @@ export const recordDailyTap = async (req, res) => {
       streak.heartFillPercentage + FILL_INCREMENT
     );
 
-    // milestone logic
     const newMilestones = [];
     if (streak.currentStreak === 7 && !streak.milestones.includes("7days")) {
       newMilestones.push("7days");
@@ -140,7 +135,6 @@ export const recordDailyTap = async (req, res) => {
   }
 };
 
-// GET /api/streaks/:email — fetch user streak
 export const getUserStreak = async (req, res) => {
   try {
     const { email } = req.params;

@@ -1,10 +1,9 @@
 import Event from "../models/Event.js";
 
-// temporary fallback (in case DB has no events yet)
 const DEFAULT_EVENTS = {
   engagement: {
     name: "engagement",
-    date: new Date("2025-12-07T18:00:00+05:30"), // IST
+    date: new Date("2025-12-07T18:00:00+05:30"),
     description: "Our Engagement Day 💍",
   },
   marriage: {
@@ -19,7 +18,7 @@ const calculateRemainingTime = (eventDate) => {
   const diff = eventDate - now;
 
   if (diff <= 0) {
-    const timeSince = Math.abs(diff); // Make it positive
+    const timeSince = Math.abs(diff);
     
     const days = Math.floor(timeSince / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeSince / (1000 * 60 * 60)) % 24);
@@ -28,8 +27,6 @@ const calculateRemainingTime = (eventDate) => {
 
     return { days, hours, minutes, seconds, isOver: true };
   }
-
-  // Event is in the future - countdown
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
   const minutes = Math.floor((diff / (1000 * 60)) % 60);
@@ -38,18 +35,14 @@ const calculateRemainingTime = (eventDate) => {
   return { days, hours, minutes, seconds, isOver: false };
 };
 
-// GET /api/countdowns/:event
 export const getCountdown = async (req, res) => {
   try {
     const { event } = req.params;
     if (!["engagement", "marriage"].includes(event)) {
       return res.status(400).json({ success: false, error: "Invalid event name." });
     }
-
-    // Try fetching from DB
     let eventData = await Event.findOne({ name: event });
 
-    // fallback to default
     if (!eventData) {
       eventData = DEFAULT_EVENTS[event];
     }
@@ -69,7 +62,6 @@ export const getCountdown = async (req, res) => {
   }
 };
 
-// POST /api/countdowns — (Admin only) create/update event
 export const setEventDate = async (req, res) => {
   try {
     const { name, date, description } = req.body;

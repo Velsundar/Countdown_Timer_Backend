@@ -1,8 +1,6 @@
 import User from "../models/User.js";
 import Streak from "../models/Streak.js";
 import Event from "../models/Event.js";
-
-// GET /api/admin/stats
 export const getDashboardStats = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
@@ -26,8 +24,6 @@ export const getDashboardStats = async (req, res) => {
     res.status(500).json({ success: false, error: "Error fetching dashboard stats." });
   }
 };
-
-// GET /api/admin/users
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().sort({ createdAt: -1 });
@@ -38,7 +34,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// PUT /api/admin/events
 export const updateEvent = async (req, res) => {
   try {
     const { name, date, description } = req.body;

@@ -1,6 +1,5 @@
 import User from "../models/User.js";
 
-// POST /api/users — Create or fetch user
 export const createOrFetchUser = async (req, res) => {
   try {
     const { name, email, phone } = req.body;
@@ -15,7 +14,6 @@ export const createOrFetchUser = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (user) {
-      // Update visit info
       user.lastVisit = new Date();
       user.totalVisits += 1;
       await user.save();
@@ -27,7 +25,6 @@ export const createOrFetchUser = async (req, res) => {
       });
     }
 
-    // Create new user
     user = await User.create({
       name,
       email,
@@ -50,7 +47,6 @@ export const createOrFetchUser = async (req, res) => {
   }
 };
 
-// GET /api/users/:email — Get user by email
 export const getUserByEmail = async (req, res) => {
   try {
     const { email } = req.params;
