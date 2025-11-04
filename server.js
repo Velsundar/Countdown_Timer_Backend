@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api", apiLimiter);
 app.use("/api/users", userRoutes);
 app.use("/api/streaks", streakRoutes);
-app.use("/api/countdowns", countdownRoutes);
+app.use("/api/countdown", countdownRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(errorHandler);
 app.use(helmet());
